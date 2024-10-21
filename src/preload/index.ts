@@ -1,10 +1,11 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { GET_PORT } from '../main/ipc-constant'
+import { GET_GSI_SERVER_PORT, GET_STORE } from '../main/ipc-constant'
 
 // Custom APIs for renderer
 const api = {
-  getPort: () => ipcRenderer.invoke(GET_PORT)
+  getGsiServerPort: () => ipcRenderer.invoke(GET_GSI_SERVER_PORT),
+  getStore: () => ipcRenderer.invoke(GET_STORE)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

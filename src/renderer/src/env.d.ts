@@ -8,7 +8,7 @@ declare module '*.vue' {
 }
 
 interface Window {
-  // expose in the `electron/preload/index.ts`
+  // expose in the `electron/preload/clock-store.ts`
   ipcRenderer: import('electron').IpcRenderer
   api: any
 }
