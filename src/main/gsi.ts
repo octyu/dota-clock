@@ -1,8 +1,9 @@
 import express, { Express } from 'express'
 import { registerGetPort } from './ipc'
 import { AddressInfo } from 'node:net'
-import { getClockStore } from './store'
 import { playAudio } from './audio'
+import { Clock } from '../common/types/clock-types'
+import { getClockStore } from './store'
 
 /**
  * 初始化 Game State Integration 监听器
@@ -67,17 +68,17 @@ function registerReceiveGsiMessage(expressApp: Express) {
     const preClockTime = jsonObject['previously']['map']['clock_time']
     if (preClockTime) {
       const curClockTime = jsonObject['map']['clock_time']
-      const clocks = getClockStore()
-      clocks.forEach((clock) => {
+      const clocks: Clock[] = getClockStore()
+      for (const clock of clocks) {
         if (!clock.audioPath || clock.audioPath.length <= 0) {
-          return
+          continue
         }
         const matchClock = (curClockTime - clock.firstTime) % clock.interval === 0
         const repeatTimes = (curClockTime - clock.firstTime) / clock.interval + 1
         if (matchClock && (clock.repeat < 0 || repeatTimes <= clock.repeat)) {
           playAudio(clock.audioPath)
         }
-      })
+      }
     }
     res.send({
       code: 0,

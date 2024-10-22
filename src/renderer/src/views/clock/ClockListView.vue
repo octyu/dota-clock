@@ -2,7 +2,7 @@
 import { NFlex, NFloatButton, NFloatButtonGroup, NIcon } from 'naive-ui'
 import { onMounted, Ref, ref } from 'vue'
 import { AddOutline, PencilOutline } from '@vicons/ionicons5'
-import { Clock } from '../../types/clock-types'
+import { Clock } from '../../../../common/types/clock-types'
 import { getClockStore, initClockStore } from '../../store/clock-store'
 import ClockItemView from './ClockItemView.vue'
 import ClockSettingView from './ClockSettingView.vue'
@@ -33,7 +33,15 @@ const readAndInitUserNoticeConfigIfAbsent = async () => {
   }
   if (userClocks) {
     clocks.value = Object.values(userClocks).map((clock) => {
-      return new Clock(clock)
+      return new Clock(
+        clock.label,
+        clock.key,
+        clock.enable,
+        clock.audioPath,
+        clock.firstTime,
+        clock.interval,
+        clock.repeat
+      )
     })
   }
 }

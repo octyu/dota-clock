@@ -9,21 +9,27 @@ import {
   NInput,
   NInputNumber,
   NPopover,
-  NSwitch,
   NTimePicker
 } from 'naive-ui'
 import { ref, watch } from 'vue'
-import { Clock } from '../../types/clock-types'
+import { Clock } from '../../../../common/types/clock-types'
 import { setClockStore } from '../../store/clock-store'
 import { convertSecondsToTimeString } from '../../util/time-util'
+import {
+  DEFAULT_CLOCK_AUDIO_PATH,
+  DEFAULT_CLOCK_FORMATTED_TIME,
+  DEFAULT_CLOCK_INTERVAL,
+  DEFAULT_CLOCK_LABEL,
+  DEFAULT_CLOCK_REPEAT
+} from '../../constant/clock-constant'
 
 class ClockSetting {
   clock: Clock | undefined
-  label: string
-  formattedFirstTime: string
-  interval: number
-  repeat: number
-  audioPath: string
+  label: string = DEFAULT_CLOCK_LABEL
+  formattedFirstTime: string = DEFAULT_CLOCK_FORMATTED_TIME
+  interval: number = DEFAULT_CLOCK_INTERVAL
+  repeat: number = DEFAULT_CLOCK_REPEAT
+  audioPath: string = DEFAULT_CLOCK_AUDIO_PATH
 
   constructor() {
     this.reset()
@@ -31,11 +37,11 @@ class ClockSetting {
 
   reset() {
     this.clock = undefined
-    this.label = '闹钟'
-    this.formattedFirstTime = '00:00:00'
-    this.interval = 0
-    this.repeat = -1
-    this.audioPath = ''
+    this.label = DEFAULT_CLOCK_LABEL
+    this.formattedFirstTime = DEFAULT_CLOCK_FORMATTED_TIME
+    this.interval = DEFAULT_CLOCK_INTERVAL
+    this.repeat = DEFAULT_CLOCK_REPEAT
+    this.audioPath = DEFAULT_CLOCK_AUDIO_PATH
   }
 }
 
@@ -51,7 +57,7 @@ const emit = defineEmits(['onVisibleChange', 'onUpdateClock', 'onAddClock'])
  */
 const drawerActive = ref<boolean>(props.visible)
 
-const originSetting = ref<Clock>(props.clock)
+const originSetting = ref<Clock | undefined>(props.clock)
 const nowSetting = ref(new ClockSetting())
 
 watch(
@@ -108,11 +114,6 @@ const updateDrawerVisible = (v: boolean) => {
 }
 
 const handleClickPlayButton = () => {
-  // await window.electron.ipcRenderer.invoke('getAudioBlob', audioPath.value).then((bolb) => {
-  //   const url = window.URL.createObjectURL(new Blob([bolb], { type: 'audio/mp3' }))
-  //   const audio = new Audio(url)
-  //   audio.play()
-  // })
   window.electron.ipcRenderer.invoke('playAudio', nowSetting.value.audioPath)
 }
 

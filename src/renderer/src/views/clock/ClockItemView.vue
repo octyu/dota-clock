@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { SettingsOutline, AlarmOutline } from '@vicons/ionicons5'
-import { NButton, NCard, NIcon, NPopover, NSwitch } from 'naive-ui'
-import { Clock } from '../../types/clock-types'
-import { computed, h, ref, watch, watchEffect } from 'vue'
+import { AlarmOutline } from '@vicons/ionicons5'
+import { NCard, NIcon, NPopover, NSwitch } from 'naive-ui'
+import { Clock } from '../../../../common/types/clock-types'
+import { computed, ref, watch } from 'vue'
 import { delClockStore, setClockEnableStore } from '../../store/clock-store'
 import { convertSecondsToTimeString } from '../../util/time-util'
 
@@ -15,8 +15,10 @@ const clock = ref(props.clock)
 const editMode = ref(props.editMode)
 
 const alarmTime = computed(() => {
-  const times = []
-
+  if (!props.clock) {
+    return ''
+  }
+  const times: string[] = []
   times.push(convertSecondsToTimeString(props.clock.firstTime))
 
   let repeat = props.clock.repeat
@@ -53,8 +55,11 @@ const emit = defineEmits(['onClickClock', 'onClickCloseButton'])
 
 const handleSettingViewEnableChange = () => {
   return (value: boolean) => {
+    if (!clock.value) {
+      return
+    }
     clock.value.enable = value
-    setClockEnableStore(clock, value)
+    setClockEnableStore(clock.value.key, value)
   }
 }
 
@@ -70,6 +75,9 @@ const handleClickClock = () => {
 }
 
 const handleClickCloseButton = () => {
+  if (!clock.value) {
+    return
+  }
   delClockStore(clock.value.key)
   emit('onClickCloseButton', clock.value)
 }
@@ -78,19 +86,20 @@ const handleClickCloseButton = () => {
 <template>
   <div class="my-1 card-size">
     <n-card
-      :title="clock.label"
+      :title="clock ? clock.label : '闹钟'"
       size="large"
       hoverable
       :closable="editMode"
       :style="editStyle"
       :on-close="handleClickCloseButton"
-      @click="handleClickClock(clock)"
+      @click="handleClickClock"
     >
       <template #header-extra>
         <n-switch
+          v-if="clock"
           v-show="!editMode"
           v-model:value="clock.enable"
-          :on-update:value="handleSettingViewEnableChange(clock)"
+          :on-update:value="handleSettingViewEnableChange"
           class="align-middle"
           @click.stop="handleClickStopSwitch"
         />

@@ -8,10 +8,8 @@ import {
   SET_STORE
 } from './ipc-constant'
 import { AddressInfo } from 'node:net'
-import Store from 'electron-store'
 import { playAudio } from './audio'
-
-const store = new Store()
+import { deleteStore, getStore, setStore } from './store'
 
 export const registerGetPort = (address: AddressInfo) => {
   ipcMain.handle(GET_GSI_SERVER_PORT, () => {
@@ -23,14 +21,14 @@ export const registerCommonIpc = () => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.on(SET_STORE, (_, key, value) => {
-    store.set(key, value)
+    setStore(key, value)
   })
   ipcMain.on(DELETE_STORE, (_, key) => {
-    store.delete(key)
+    deleteStore(key)
   })
 
   ipcMain.handle(GET_STORE, (_, key) => {
-    return store.get(key)
+    return getStore(key)
   })
   ipcMain.handle(GET_AUDIO_FILE_PATH, handleFileOpen)
   ipcMain.handle(PLAY_AUDIO, (_, path) => {

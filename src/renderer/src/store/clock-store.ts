@@ -1,4 +1,4 @@
-import { ClockStore, Clock } from '../types/clock-types'
+import { ClockStore, Clock } from '../../../common/types/clock-types'
 
 export const NAMESPACE_CLOCK = 'clock'
 
@@ -27,8 +27,8 @@ export const getClockStore = async () => {
   return getStore(NAMESPACE_CLOCK)
 }
 
-export const setClockEnableStore = async (clock: Clock, enable: boolean) => {
-  await setStore(`${NAMESPACE_CLOCK}.${clock.key}.enable`, enable)
+export const setClockEnableStore = async (key: string, enable: boolean) => {
+  await setStore(`${NAMESPACE_CLOCK}.${key}.enable`, enable)
 }
 
 export const setClockStore = async (clock: Clock) => {

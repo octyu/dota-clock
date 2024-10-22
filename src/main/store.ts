@@ -1,4 +1,5 @@
 import Store from 'electron-store'
+import { Clock } from '../common/types/clock-types'
 
 const STORE = new Store()
 
@@ -16,6 +17,17 @@ export function deleteStore(key) {
   STORE.delete(key)
 }
 
-export function getClockStore() {
-  return Object.values(getStore(NAMESPACE_CLOCK))
+export function getClockStore(): Clock[] {
+  const clocks: Record<string, Clock> = getStore(NAMESPACE_CLOCK) as Record<string, Clock>
+  return Object.values(clocks).map((clock: Clock) => {
+    return new Clock(
+      clock.label,
+      clock.key,
+      clock.enable,
+      clock.audioPath,
+      clock.firstTime,
+      clock.interval,
+      clock.repeat
+    )
+  })
 }
