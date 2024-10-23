@@ -114,7 +114,7 @@ const updateDrawerVisible = (v: boolean) => {
 }
 
 const handleClickPlayButton = () => {
-  window.electron.ipcRenderer.invoke('playAudio', nowSetting.value.audioPath)
+  window.electron.ipcRenderer.send('playAudio', nowSetting.value.audioPath)
 }
 
 const submitSetting = () => {

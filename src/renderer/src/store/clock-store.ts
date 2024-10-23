@@ -1,4 +1,5 @@
 import { ClockStore, Clock } from '../../../common/types/clock-types'
+import { delStore, getStore, setStore } from './store'
 
 export const NAMESPACE_CLOCK = 'clock'
 
@@ -53,16 +54,4 @@ export const initClockStore = async () => {
 
 export const delClockStore = async (key: string) => {
   await delStore(`${NAMESPACE_CLOCK}.${key}`)
-}
-
-const getStore = async (key: string) => {
-  return window.electron.ipcRenderer.invoke('getStore', key)
-}
-
-const setStore = async (key: string, value: any) => {
-  window.electron.ipcRenderer.send('setStore', key, value)
-}
-
-const delStore = async (key: string) => {
-  window.electron.ipcRenderer.send('delStore', key)
 }
