@@ -17,12 +17,12 @@ jobs:
 
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v3.0.0
+        uses: actions/checkout@v4.2.0
 
       - name: Install Node.js
-        uses: actions/setup-node@v3.0.0
+        uses: actions/setup-node@v4.0.4
         with:
-          node-version: "16"
+          node-version: "18"
 
       - name: Install Dependencies
         run: npm install
@@ -30,7 +30,7 @@ jobs:
       - name: Build Electron App
         run: npm run make
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BUILD }}
 
       - name: Cleanup Artifacts for Windows
         if: matrix.os == 'windows-latest'
