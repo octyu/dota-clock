@@ -12,10 +12,9 @@ import {
 import { AddressInfo } from 'node:net'
 import { playAudio } from './audio'
 import { deleteStore, getStore, setStore } from './store'
-import { dirname, join } from 'path'
+import { join } from 'path'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import { GSI_SERVER_PORT } from './gsi'
-import { createCommentVNode } from 'vue'
 
 export const registerGetPort = (address: AddressInfo) => {
   ipcMain.handle(GET_GSI_SERVER_PORT, () => {
@@ -50,7 +49,7 @@ export const registerCommonIpc = () => {
   })
 }
 
-async function handleDialogOpen(param: string) {
+async function handleDialogOpen(param: 'openFile' | 'openDirectory') {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: [param]
   })
