@@ -22,7 +22,6 @@ export function initGsiListener() {
     if (server.address() && (server.address() as AddressInfo)) {
       const address = server.address() as AddressInfo
       GSI_SERVER_PORT = address.port
-      console.log('Express server is running on port: ', address.port)
       registerGetPort(address)
     } else {
       console.error('Express server run failed, server: ', server.address())

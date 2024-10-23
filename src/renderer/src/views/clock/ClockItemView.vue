@@ -53,14 +53,12 @@ const editStyle = computed(() => ({
 
 const emit = defineEmits(['onClickClock', 'onClickCloseButton'])
 
-const handleSettingViewEnableChange = () => {
-  return (value: boolean) => {
-    if (!clock.value) {
-      return
-    }
-    clock.value.enable = value
-    setClockEnableStore(clock.value.key, value)
+const handleSettingViewEnableChange = (value: boolean) => {
+  if (!clock.value) {
+    return
   }
+  clock.value.enable = value
+  setClockEnableStore(clock.value.key, value)
 }
 
 const handleClickStopSwitch = () => {

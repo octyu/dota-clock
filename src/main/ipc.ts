@@ -15,6 +15,7 @@ import { deleteStore, getStore, setStore } from './store'
 import { dirname, join } from 'path'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import { GSI_SERVER_PORT } from './gsi'
+import { createCommentVNode } from 'vue'
 
 export const registerGetPort = (address: AddressInfo) => {
   ipcMain.handle(GET_GSI_SERVER_PORT, () => {
@@ -41,8 +42,8 @@ export const registerCommonIpc = () => {
   ipcMain.handle(GET_DIR_PATH, async () => {
     return handleDialogOpen('openDirectory')
   })
-  ipcMain.on(INIT_GSI_CONFIG, (_, path) => {
-    updateGsiConfigFile(path, GSI_SERVER_PORT)
+  ipcMain.handle(INIT_GSI_CONFIG, (_, path) => {
+    return updateGsiConfigFile(path, GSI_SERVER_PORT)
   })
   ipcMain.on(PLAY_AUDIO, (_, path) => {
     playAudio(path)
@@ -59,7 +60,7 @@ async function handleDialogOpen(param: string) {
   return ''
 }
 
-function updateGsiConfigFile(dotaPath: string, port: number) {
+function updateGsiConfigFile(dotaPath: string, port: number): string {
   const configDir = join(dotaPath, '/game/dota/cfg/gamestate_integration')
   const configPath = join(configDir, '/gamestate_integration_dota_clock.cfg')
   const content = `
@@ -84,7 +85,16 @@ function updateGsiConfigFile(dotaPath: string, port: number) {
 }
     `
   if (!existsSync(configDir)) {
-    mkdirSync(configDir, { recursive: true })
+    try {
+      mkdirSync(configDir, { recursive: true })
+    } catch (e) {
+      return `创建 GSI 配置文件目录失败，${e}`
+    }
   }
-  writeFileSync(configPath, content, 'utf8')
+  try {
+    writeFileSync(configPath, content, 'utf8')
+  } catch (e) {
+    return `更新 GSI 配置文件失败，${e}`
+  }
+  return `初始化 GSI 配置文件成功，路径为 ${configPath}`
 }
