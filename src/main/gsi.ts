@@ -4,6 +4,8 @@ import { AddressInfo } from 'node:net'
 import { playAudio } from './audio'
 import { Clock } from '../common/types/clock-types'
 import { getClockStore } from './store'
+import { dirname, join } from 'path'
+import { existsSync, mkdirSync, writeFileSync } from 'fs'
 
 /**
  * 初始化 Game State Integration 监听器
@@ -19,6 +21,7 @@ export function initGsiListener() {
   const server = expressApp.listen(randomPort, () => {
     if (server.address() && (server.address() as AddressInfo)) {
       const address = server.address() as AddressInfo
+      // updateGsiConfigFile('', address.port)
       console.log('Express server is running on port: ', address.port)
       registerGetPort(address)
     } else {
@@ -85,4 +88,38 @@ function registerReceiveGsiMessage(expressApp: Express) {
       message: 'Success'
     })
   })
+}
+
+function updateGsiConfigFile(dirPath: string, port: number) {
+  const filePath = join(
+    dirPath,
+    'game/dota/cfg/gamestate_integration/gamestate_integration_dota_clock.cfg'
+  )
+  const content = ```
+    "dota2-gsi Configuration"
+    {
+        "uri"               "http://localhost:${port}/"
+        "timeout"           "5.0"
+        "buffer"            "0.1"
+        "throttle"          "0.1"
+        "heartbeat"         "30.0"
+        "data"
+        {
+            "provider"      "1"
+            "map"           "1"
+            "player"        "1"
+            "hero"          "1"
+        }
+        "auth"
+        {
+            "token"         "dota_clock"
+        }
+    }
+    ```
+
+  const dir = dirname(dirPath)
+  if (!existsSync(dir)) {
+    mkdirSync(dir, { recursive: true })
+  }
+  writeFileSync(filePath, content, 'utf8')
 }

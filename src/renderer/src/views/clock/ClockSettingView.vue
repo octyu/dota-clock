@@ -102,7 +102,7 @@ const generateKey = () => {
 }
 
 const getFilePath = async () => {
-  nowSetting.value.audioPath = await window.electron.ipcRenderer.invoke('getAudioFilePath')
+  nowSetting.value.audioPath = await window.electron.ipcRenderer.invoke('getFilePath')
 }
 
 const handleFileSelectCardClose = () => {

@@ -1,7 +1,8 @@
 import { dialog, ipcMain } from 'electron'
 import {
   DELETE_STORE,
-  GET_AUDIO_FILE_PATH,
+  GET_FILE_PATH,
+  GET_DIR_PATH,
   GET_GSI_SERVER_PORT,
   GET_STORE,
   PLAY_AUDIO,
@@ -30,15 +31,22 @@ export const registerCommonIpc = () => {
   ipcMain.handle(GET_STORE, (_, key) => {
     return getStore(key)
   })
-  ipcMain.handle(GET_AUDIO_FILE_PATH, handleFileOpen)
+  ipcMain.handle(GET_FILE_PATH, async () => {
+    return handleDialogOpen('openFile')
+  })
+  ipcMain.handle(GET_DIR_PATH, async () => {
+    return handleDialogOpen('openDirectory')
+  })
   ipcMain.handle(PLAY_AUDIO, (_, path) => {
     playAudio(path)
   })
 }
 
-async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog({})
-  if (!canceled) {
+async function handleDialogOpen(param: string) {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: [param]
+  })
+  if (!canceled && filePaths.length > 0) {
     return filePaths[0]
   }
   return ''
