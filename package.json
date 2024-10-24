@@ -1,9 +1,9 @@
 {
   "name": "dota-clock",
-  "version": "1.0.6",
-  "description": "An Electron application with Vue and TypeScript",
+  "version": "1.0.7",
+  "description": "A simple clock application to help play dota2",
   "main": "./dist/main/index.js",
-  "author": "example.com",
+  "author": "octyu",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --write .",
