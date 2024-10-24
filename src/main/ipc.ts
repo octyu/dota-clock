@@ -12,9 +12,8 @@ import {
 import { AddressInfo } from 'node:net'
 import { playAudio } from './audio'
 import { deleteStore, getStore, setStore } from './store'
-import { join } from 'path'
-import { existsSync, mkdirSync, writeFileSync } from 'fs'
-import { GSI_SERVER_PORT } from './gsi'
+import { GSI } from './global'
+import { updateGsiConfigFile } from './gsi'
 
 export const registerGetPort = (address: AddressInfo) => {
   ipcMain.handle(GET_GSI_SERVER_PORT, () => {
@@ -42,7 +41,7 @@ export const registerCommonIpc = () => {
     return handleDialogOpen('openDirectory')
   })
   ipcMain.handle(INIT_GSI_CONFIG, (_, path) => {
-    return updateGsiConfigFile(path, GSI_SERVER_PORT)
+    return updateGsiConfigFile(path, GSI.getListenerPort())
   })
   ipcMain.on(PLAY_AUDIO, (_, path) => {
     playAudio(path)
@@ -57,43 +56,4 @@ async function handleDialogOpen(param: 'openFile' | 'openDirectory') {
     return filePaths[0]
   }
   return ''
-}
-
-function updateGsiConfigFile(dotaPath: string, port: number): string {
-  const configDir = join(dotaPath, '/game/dota/cfg/gamestate_integration')
-  const configPath = join(configDir, '/gamestate_integration_dota_clock.cfg')
-  const content = `
-"dota2-gsi Configuration"
-{
-    "uri"               "http://localhost:${port}/"
-    "timeout"           "5.0"
-    "buffer"            "0.1"
-    "throttle"          "0.1"
-    "heartbeat"         "30.0"
-    "data"
-    {
-        "provider"      "1"
-        "map"           "1"
-        "player"        "1"
-        "hero"          "1"
-    }
-    "auth"
-    {
-        "token"         "dota_clock"
-    }
-}
-    `
-  if (!existsSync(configDir)) {
-    try {
-      mkdirSync(configDir, { recursive: true })
-    } catch (e) {
-      return `创建 GSI 配置文件目录失败，${e}`
-    }
-  }
-  try {
-    writeFileSync(configPath, content, 'utf8')
-  } catch (e) {
-    return `更新 GSI 配置文件失败，${e}`
-  }
-  return `初始化 GSI 配置文件成功，路径为 ${configPath}`
 }
