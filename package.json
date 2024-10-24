@@ -1,6 +1,6 @@
 {
   "name": "dota-clock",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "An Electron application with Vue and TypeScript",
   "main": "./dist/main/index.js",
   "author": "example.com",

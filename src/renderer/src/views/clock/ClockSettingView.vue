@@ -193,7 +193,6 @@ const cancelSetting = () => {
         <n-input-number
           v-model:value="nowSetting.interval"
           :style="{ width: '30%' }"
-          round
           placeholder="0"
           :show-button="false"
         >
@@ -212,7 +211,6 @@ const cancelSetting = () => {
         <n-input-number
           v-model:value="nowSetting.repeat"
           :style="{ width: '30%' }"
-          round
           placeholder="0"
           :show-button="false"
         >
