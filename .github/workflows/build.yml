@@ -3,7 +3,9 @@ name: Build
 on:
   push:
     tags:
-      - '*'
+      - '*'  # 监听所有 tag
+    branches:
+      - master
 
 jobs:
   release:
