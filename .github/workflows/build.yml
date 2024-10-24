@@ -11,6 +11,8 @@ jobs:
   release:
     name: build and release electron app
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
 
     strategy:
       fail-fast: false
